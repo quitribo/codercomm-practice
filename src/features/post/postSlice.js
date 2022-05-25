@@ -57,12 +57,16 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
 
-      const { bePost } = action.payload; // response from backend
+      // state.currentPagePosts.filter((fePost) => {
+      //   console.log(state.currentPagePosts);
+      // });
+      const bePost = action.payload; // response from backend
 
-      state.currentPagePosts.filter((fePost) => {
-        return fePost._id === bePost._id ? false : true;
-      });
-      // console.log(bePost);
+      console.log("bePost", bePost);
+      // const posts = state.currentPagePosts.filter(
+      //   (fePost) => fePost !== bePost
+      // );
+      // state.currentPagePosts = posts;
     },
 
     sendPostReactionSuccess(state, action) {
