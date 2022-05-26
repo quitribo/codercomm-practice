@@ -57,16 +57,31 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
 
-      // state.currentPagePosts.filter((fePost) => {
-      //   console.log(state.currentPagePosts);
-      // });
+      const bePost = action.payload; // response from backend
+      // console.log("bePost", bePost);
+      const posts = state.currentPagePosts.filter(
+        (fePost) => fePost !== bePost._id
+      );
+      state.currentPagePosts = posts;
+    },
+
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+
       const bePost = action.payload; // response from backend
 
-      console.log("bePost", bePost);
-      // const posts = state.currentPagePosts.filter(
-      //   (fePost) => fePost !== bePost
-      // );
-      // state.currentPagePosts = posts;
+      // console.log(bePost._id);
+      // console.log(bePost.content);
+      // console.log(bePost.image);
+
+      const posts = state.currentPagePosts.filter(
+        (fePost) => fePost === bePost._id
+      );
+      // console.log(state.postsById[bePost._id].content);
+
+      state.currentPagePosts = posts;
+      // console.log(posts);
     },
 
     sendPostReactionSuccess(state, action) {
@@ -116,6 +131,22 @@ export const createPost =
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);
+    }
+  };
+
+export const editPost =
+  ({ postId, content, image }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await apiService.put(`/posts/${postId}`, {
+        content: content,
+        image: image,
+      });
+      dispatch(slice.actions.editPostSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      // toast.error(error.message);
     }
   };
 
