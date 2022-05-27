@@ -65,23 +65,13 @@ const slice = createSlice({
       state.currentPagePosts = posts;
     },
 
-    editPostSuccess(state, action) {
-      state.isLoading = false;
-      state.error = null;
-
-      const bePost = action.payload; // response from backend
-
-      // console.log(bePost._id);
-      // console.log(bePost.content);
-      // console.log(bePost.image);
-
-      const posts = state.currentPagePosts.filter(
-        (fePost) => fePost === bePost._id
-      );
-      // console.log(state.postsById[bePost._id].content);
-
-      state.currentPagePosts = posts;
-      // console.log(posts);
+    postUpdated(state, action) {
+      const { id, title, content } = action.payload;
+      const existingPost = state.find((post) => post.id === id);
+      if (existingPost) {
+        existingPost.title = title;
+        existingPost.content = content;
+      }
     },
 
     sendPostReactionSuccess(state, action) {
@@ -139,14 +129,18 @@ export const editPost =
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await apiService.put(`/posts/${postId}`, {
-        content: content,
-        image: image,
-      });
-      dispatch(slice.actions.editPostSuccess(response.data));
+      const data = {
+        postId,
+        content,
+        image,
+      };
+
+      const response = await apiService.put(`/posts/${postId}`, data);
+      dispatch(slice.actions.postUpdated(response.data));
+      toast.success("Update Post successfully");
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
-      // toast.error(error.message);
+      toast.error(error.message);
     }
   };
 

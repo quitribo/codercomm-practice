@@ -16,6 +16,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PostReaction from "./PostReaction";
 import CommentForm from "../comment/CommentForm";
 import CommentList from "../comment/CommentList";
+import PostEdit from "./PostEdit";
+import DeletePost from "./DeletePost";
 
 function PostCard({ post }) {
   return (
@@ -67,6 +69,8 @@ function PostCard({ post }) {
           </Box>
         )}
 
+        <PostEdit post={post} />
+        <DeletePost post={post} />
         <PostReaction post={post} />
         <CommentList postId={post._id} />
         <CommentForm postId={post._id} />
