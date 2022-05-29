@@ -56,6 +56,21 @@ const slice = createSlice({
       state.totalPages = totalPages;
     },
 
+    getFriendRequestsOutgoingSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+
+      const { users, count, totalPages } = action.payload;
+      users.forEach((user) => (state.usersById[user._id] = user));
+      state.currentPageUsers = users.map((user) => user._id);
+      state.totalUsers = count;
+      state.totalPages = totalPages;
+
+      // console.log(users);
+      // console.log(count);
+      // console.log(totalPages);
+    },
+
     sendFriendRequestSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
@@ -136,6 +151,23 @@ export const getFriendRequests =
         params,
       });
       dispatch(slice.actions.getFriendRequestsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
+
+export const getFriendRequestsOutgoing =
+  ({ filterName, page = 1, limit = 12 }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const params = { page, limit };
+      if (filterName) params.name = filterName;
+      const response = await apiService.get("/friends/requests/outgoing", {
+        params,
+      });
+      dispatch(slice.actions.getFriendRequestsOutgoingSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);

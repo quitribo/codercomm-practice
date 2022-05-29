@@ -4,37 +4,34 @@ import { Box, Card, alpha, Stack } from "@mui/material";
 import { FormProvider, FTextField } from "../../components/form";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { createPost } from "./postSlice";
-import { LoadingButton } from "@mui/lab";
 
-const yupSchema = Yup.object().shape({
-  content: Yup.string().required("Content is required"),
-});
+import { editPost } from "./postSlice";
+import { LoadingButton } from "@mui/lab";
 
 function EditForm({ post }) {
   const { isLoading } = useSelector((state) => state.post);
 
   const defaultValues = {
+    id: post._id,
     content: post.content,
     image: null,
   };
 
   const methods = useForm({
-    resolver: yupResolver(yupSchema),
     defaultValues,
   });
+
   const {
     handleSubmit,
-    reset,
-    setValue,
+    // reset,
     formState: { isSubmitting },
   } = methods;
+
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    dispatch(createPost(data)).then(() => reset());
+    // dispatch(editPost(data)).then(() => reset());
+    dispatch(editPost(data));
   };
 
   return (
@@ -46,7 +43,6 @@ function EditForm({ post }) {
             multiline
             fullWidth
             rows={4}
-            placeholder="Share what you are thinking here..."
             sx={{
               "& fieldset": {
                 borderWidth: `1px !important`,

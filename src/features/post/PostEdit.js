@@ -40,7 +40,7 @@ function PostEdit({ post }) {
             Text in a modal
           </Typography>
         </Box> */}
-        <PostEdit post={post} />
+        <EditForm post={post} />
       </Modal>
     </Stack>
   );
